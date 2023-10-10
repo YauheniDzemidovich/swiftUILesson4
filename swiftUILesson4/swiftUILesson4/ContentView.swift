@@ -95,7 +95,6 @@ struct ContentView: View {
         NextTrackButton(performAnimation: $isAnimating)
             .frame(maxWidth: 60)
             .buttonStyle(ButtonAnnimationStyle())
-            //.buttonStyle(ScaleEffectStyle())
     }
 }
 
