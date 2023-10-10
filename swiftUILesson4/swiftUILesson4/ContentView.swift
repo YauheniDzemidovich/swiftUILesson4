@@ -15,32 +15,25 @@ private enum Settings {
     static let imageName = "play.fill"
 }
 
-struct ButtonAnnimationStyle: PrimitiveButtonStyle {
+struct ButtonAnnimationStyle: ButtonStyle {
     @State private var isAnimation = false
     
     func makeBody(configuration: Configuration) -> some View {
-        
         configuration.label
-            
-            .foregroundColor(.black)
             .background(
                 Circle()
-                    .foregroundColor(.gray.opacity(isAnimation ? 0.5 : .zero))
+                    .foregroundColor(.gray.opacity(isAnimation ? 0.5: .zero))
                     .frame(width: 100, height: 100)
             )
-            .scaleEffect(isAnimation ? Settings.scale : 1)
-            .onTapGesture {
-                if !isAnimation {
-                    withAnimation(.interpolatingSpring(stiffness: 170, damping: 15)) {
-                        print("animation button style")
-                        isAnimation = true
-                        configuration.trigger()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + Settings.duration) {
-                            isAnimation = false
-                        }
-                    }
+            .onChange(of: configuration.isPressed) { _ in
+                print("onChange start animation")
+                isAnimation = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + Settings.duration) {
+                    isAnimation = false
                 }
             }
+            .scaleEffect(isAnimation ? Settings.scale : 1)
+            .animation(.linear(duration: Settings.duration), value: isAnimation)
     }
 }
 
@@ -102,6 +95,7 @@ struct ContentView: View {
         NextTrackButton(performAnimation: $isAnimating)
             .frame(maxWidth: 60)
             .buttonStyle(ButtonAnnimationStyle())
+            //.buttonStyle(ScaleEffectStyle())
     }
 }
 
